@@ -1,14 +1,33 @@
 package pieces
 type pawn struct{
-	position int
-	color string
+	chessPiece
 }
+
 func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
     moves := []Position{}
+    //adds moves to array
+    if(p.color == "black"){
+        moves = append(moves, Position{row: pos.row-1, col: pos.col})
+        //checks to see if there is an enemy piece 1 square diagonal to the current pawn
+        if(board.boardArray[pos.row-1][pos.col+1].pieceName != "empty" && board.boardArray[pos.row-1][pos.col+1].color != p.color){
+            moves = append(moves, Position{row: pos.row-1, col: pos.col+1})
+        }
+        if(board.boardArray[pos.row-1][pos.col-1].pieceName != "empty" && board.boardArray[pos.row-1][pos.col+1].color != p.color){
+            moves = append(moves, Position{row: pos.row-1, col: pos.col-1})
+        }
+    }
 
-    // imagine these are legal
-    moves = append(moves, Position{Row: 5, Col: 4})
-    moves = append(moves, Position{Row: 4, Col: 4})
-
+    if(p.color == "white"){
+        moves = append(moves, Position{row: pos.row-1, col: pos.col})
+        //checks to see if there is an enemy piece 1 square diagonal to the current pawn
+        if(board.boardArray[pos.row+1][pos.col+1].pieceName != "empty" && board.boardArray[pos.row+1][pos.col+1].color != p.color){
+            moves = append(moves, Position{row: pos.row+1, col: pos.col+1})
+        }
+        if(board.boardArray[pos.row+1][pos.col-1].pieceName != "empty" && board.boardArray[pos.row+1][pos.col-1].color != p.color){
+            moves = append(moves, Position{row: pos.row+1, col: pos.col-1})
+        }
+    }
+    
     return moves
 }
+
