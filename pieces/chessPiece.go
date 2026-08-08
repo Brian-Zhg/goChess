@@ -1,8 +1,14 @@
 package pieces
 
-
-type chessPiece struct{
+type chessPiece struct {
 	pieceName string
-	color string
-	pos Position
+	color     string
+	pos       Position
+}
+
+func NewChessPiece() chessPiece {
+	return chessPiece{
+		pieceName : "empty",
+		color : "empty",
+	}
 }

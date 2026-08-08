@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+    "fmt"
+    "chess/pieces"
+)
 
 func main() {
-    fmt.Println("Hello, World!")
+    fmt.Print("_")
+    testingBoard := pieces.Board{}
+    testingBoard.ShowBoard()
 }
