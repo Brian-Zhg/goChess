@@ -3,6 +3,8 @@ type pawn struct{
 	chessPiece
 }
 
+
+
 func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
     moves := []Position{}
     //adds moves to array
