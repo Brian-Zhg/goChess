@@ -3,7 +3,12 @@ type pawn struct{
 	chessPiece
 }
 
-
+func NewPawn(c string) chessPiece {
+	return chessPiece{
+		pieceName : "pawn",
+		color : c,
+	}
+}
 
 func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
     moves := []Position{}
