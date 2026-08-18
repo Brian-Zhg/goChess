@@ -13,7 +13,7 @@ func NewRook(c string) chessPiece {
 
 func (r *rook) LegalMoves(board *Board, pos Position) []Position {
 	moves := []Position{}
-	moveable := [4][2]int{{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+	moveable := [4][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
 	far := 1
 	finished := [4]bool{}
 	for !(finished[0] && finished[1] && finished[2] && finished[3]) {
