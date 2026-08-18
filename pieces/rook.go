@@ -13,60 +13,37 @@ func NewRook(c string) chessPiece {
 
 func (r *rook) LegalMoves(board *Board, pos Position) []Position {
 	moves := []Position{}
-	var left, right, top, bottom, stop bool
-	change := 1
-	for !stop {
-		if !left {
-			if !(pos.col-change < 0) && !(pos.col-change > 8) {
-				if board.boardArray[pos.row][pos.col-change].pieceName == "empty" {
-					moves = append(moves, Position{row: pos.row, col: pos.col - change})
-				} else if board.boardArray[pos.row][pos.col-change].color != r.color {
-					moves = append(moves, Position{row: pos.row, col: pos.col - change})
-					left = true
+	moveable := [4][2]int{{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+	far := 1
+	finished := [4]bool{}
+	for !(finished[0] && finished[1] && finished[2] && finished[3]) {
+		for i := 0; i < len(moveable); i++ {
+			if !finished[i] {
+				row := pos.row + moveable[i][0]*far
+				col := pos.col + moveable[i][1]*far
+
+				if !outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
+					if board.boardArray[row][col].pieceName == "empty" {
+						moves = append(moves, Position{
+							row: row,
+							col: col,
+						})
+					} else if board.boardArray[row][col].color != r.color {
+						moves = append(moves, Position{
+							row: row,
+							col: col,
+						})
+						finished[i] = true
+					} else {
+						finished[i] = true
+					}
 				} else {
-					left = true
+					finished[i] = true
 				}
 			}
 		}
-		if !right {
-			if !(pos.col+change < 0) && !(pos.col+change > 8) {
-				if board.boardArray[pos.row][pos.col+change].pieceName == "empty" {
-					moves = append(moves, Position{row: pos.row, col: pos.col + change})
-				} else if board.boardArray[pos.row][pos.col+change].color != r.color {
-					moves = append(moves, Position{row: pos.row, col: pos.col + change})
-					right = true
-				} else {
-					right = true
-				}
-			}
-		}
-		if !bottom {
-			if !(pos.row-change < 0) && !(pos.row-change > 8) {
-				if board.boardArray[pos.row-change][pos.col].pieceName == "empty" {
-					moves = append(moves, Position{row: pos.row-change, col: pos.col})
-				} else if board.boardArray[pos.row-change][pos.col].color != r.color {
-					moves = append(moves, Position{row: pos.row-change, col: pos.col })
-					bottom = true
-				} else {
-					bottom = true
-				}
-			}
-		}
-		if !top {
-			if !(pos.row+change < 0) && !(pos.row+change > 8) {
-				if board.boardArray[pos.row+change][pos.col].pieceName == "empty" {
-					moves = append(moves, Position{row: pos.row+change, col: pos.col})
-				} else if board.boardArray[pos.row+change][pos.col].color != r.color {
-					moves = append(moves, Position{row: pos.row+change, col: pos.col })
-					top = true
-				} else {
-					top = true
-				}
-			}
-		}
-		
-		change++
-		stop = top && bottom && left && right
+
+		far++
 	}
 
 	return moves
