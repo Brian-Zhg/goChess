@@ -61,10 +61,18 @@ for (let row = 0; row < 8; row++) {
             piece.dataset.col = col;
             // Put the actual chess symbol inside the element
             piece.textContent = pieces[pieceName];
-            piece.addEventListener("click", function () {
-                console.log("Piece:", pieceName);
-                console.log("Row:", piece.dataset.row);
-                console.log("Column:", piece.dataset.col);
+            piece.addEventListener("click", async function () {
+                const row = piece.dataset.row;
+                const col = piece.dataset.col;
+
+                const response = await fetch(
+                    `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
+                );
+
+                const data = await response.text();
+
+                console.log(data);
+                // Eventually you'll receive the legal moves here
             });
 
             square.appendChild(piece);
@@ -74,8 +82,3 @@ for (let row = 0; row < 8; row++) {
     }
 }
 
-fetch("http://127.0.0.1:8080/test")
-    .then(response => response.text())
-    .then(data => {
-        console.log(data);
-    });

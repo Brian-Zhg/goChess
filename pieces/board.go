@@ -1,20 +1,29 @@
 package pieces
 
 import "fmt"
-type Board struct{
+
+type Board struct {
 	boardArray [8][8]chessPiece
 }
 
+func (b Board) PieceLocation(row int, col int) string {
+	return b.boardArray[row][col].pieceName
+}
+
+func (b Board) ReturnPiece(row int, col int) chessPiece {
+	return b.boardArray[row][col]
+}
+
 func NewBoard() Board {
-    newBoard := Board{}
+	newBoard := Board{}
 
-    for r := 0; r < 8; r++ {
-        for c := 0; c < 8; c++ {
-            newBoard.boardArray[r][c] = NewChessPiece()
-        }
-    }
+	for r := 0; r < 8; r++ {
+		for c := 0; c < 8; c++ {
+			newBoard.boardArray[r][c] = NewChessPiece()
+		}
+	}
 
-	for c:= 0; c< 8; c++{
+	for c := 0; c < 8; c++ {
 		newBoard.boardArray[1][c] = NewPawn("white")
 		newBoard.boardArray[6][c] = NewPawn("black")
 	}
@@ -38,20 +47,19 @@ func NewBoard() Board {
 	newBoard.boardArray[0][6] = NewKnight("white")
 	newBoard.boardArray[7][1] = NewKnight("black")
 	newBoard.boardArray[7][6] = NewKnight("black")
-	
-    return newBoard
+
+	return newBoard
 }
 
-type Position struct{
+type Position struct {
 	row int
 	col int
 }
 
-
-func (b Board) ShowBoard(){
-	for r:= 0; r < 8; r++{
-		for c:= 0; c < 8; c++{
-			switch b.boardArray[r][c].pieceName{
+func (b Board) ShowBoard() {
+	for r := 0; r < 8; r++ {
+		for c := 0; c < 8; c++ {
+			switch b.boardArray[r][c].pieceName {
 			case "empty":
 				fmt.Print("_")
 			case "pawn":
@@ -70,4 +78,51 @@ func (b Board) ShowBoard(){
 		}
 		fmt.Print("\n")
 	}
+}
+
+func ShowMoves(b *Board, row int, col int) []Position {
+	piece := b.boardArray[row][col].pieceName
+	moves := []Position{}
+	switch piece {
+	case "pawn":
+		p := pawn{chessPiece: b.ReturnPiece(row, col)}
+		moves = p.LegalMoves(b, Position{row: row, col: col})
+	case "queen":
+		q := queen{chessPiece: b.ReturnPiece(row, col)}
+		moves = q.LegalMoves(b, Position{row: row, col: col})
+	case "king":
+		k := king{chessPiece: b.ReturnPiece(row, col)}
+		moves = k.LegalMoves(b, Position{row: row, col: col})
+	case "bishop":
+		bs := bishop{chessPiece: b.ReturnPiece(row, col)}
+		moves = bs.LegalMoves(b, Position{row: row, col: col})
+	case "rook":
+		r := rook{chessPiece: b.ReturnPiece(row, col)}
+		moves = r.LegalMoves(b, Position{row: row, col: col})
+	case "knight":
+		n := knight{chessPiece: b.ReturnPiece(row, col)}
+		moves = n.LegalMoves(b, Position{row: row, col: col})
+	}
+	return moves
+}
+
+func Move(b *Board, piece1 Position, piece2 Position){
+	b.boardArray[piece2.row][piece2.col]= b.boardArray[piece1.row][piece1.col]
+	b.boardArray[piece1.row][piece1.col]=NewChessPiece()
+}
+
+func ConfirmMove(b *Board, piece1 Position, piece2 Position){
+	if(contains(ShowMoves(b,piece1.row,piece1.col),piece2)){
+		Move(b, piece1, piece2)
+	}
+}
+
+
+func contains(moveable []Position, check Position) bool {
+    for i := 0;i < len(moveable); i++ {
+        if moveable[i] == check {
+            return true
+        }
+    }
+    return false
 }

@@ -1,6 +1,7 @@
 package pieces
 type pawn struct{
 	chessPiece
+    firstMove bool
 }
 
 func NewPawn(c string) chessPiece {
@@ -8,6 +9,7 @@ func NewPawn(c string) chessPiece {
 		pieceName : "pawn",
 		color : c,
 	}
+    
 }
 
 func (p *pawn) LegalMoves(board *Board, pos Position) []Position {

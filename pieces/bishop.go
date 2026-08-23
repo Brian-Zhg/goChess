@@ -22,7 +22,7 @@ for !(finished[0] && finished[1] && finished[2] && finished[3]) {
                 row := pos.row + moveable[i][0]*far
                 col := pos.col + moveable[i][1]*far
 
-                if !outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
+                if outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
                     if board.boardArray[row][col].pieceName == "empty" {
                         moves = append(moves, Position{
                             row: row,

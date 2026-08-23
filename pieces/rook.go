@@ -1,5 +1,6 @@
 package pieces
 
+
 type rook struct {
 	chessPiece
 }
@@ -22,7 +23,7 @@ func (r *rook) LegalMoves(board *Board, pos Position) []Position {
 				row := pos.row + moveable[i][0]*far
 				col := pos.col + moveable[i][1]*far
 
-				if !outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
+				if outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
 					if board.boardArray[row][col].pieceName == "empty" {
 						moves = append(moves, Position{
 							row: row,
