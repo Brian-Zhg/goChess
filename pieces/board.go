@@ -2,6 +2,7 @@ package pieces
 
 import "fmt"
 
+
 type Board struct {
 	boardArray [8][8]chessPiece
 }
