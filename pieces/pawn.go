@@ -1,7 +1,6 @@
 package pieces
 type pawn struct{
 	chessPiece
-    firstMove bool
 }
 
 func NewPawn(c string) chessPiece {
@@ -16,6 +15,9 @@ func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
     moves := []Position{}
     //adds moves to array
     if(p.color == "black"){
+        if(p.firstMove == false && board.boardArray[pos.row-1][pos.col].pieceName == "empty" && board.boardArray[pos.row-2][pos.col].pieceName == "empty"){
+            moves = append(moves, Position{row: pos.row-2, col: pos.col})
+        }
         if(board.boardArray[pos.row-1][pos.col].pieceName == "empty"){
             moves = append(moves, Position{row: pos.row-1, col: pos.col})
         }
@@ -29,6 +31,9 @@ func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
     }
 
     if(p.color == "white"){
+        if(p.firstMove == false && board.boardArray[pos.row+1][pos.col].pieceName == "empty" && board.boardArray[pos.row+2][pos.col].pieceName == "empty"){
+            moves = append(moves, Position{row: pos.row+2, col: pos.col})
+        }
         if(board.boardArray[pos.row+1][pos.col].pieceName == "empty"){
             moves = append(moves, Position{row: pos.row+1, col: pos.col})
         }

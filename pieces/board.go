@@ -126,3 +126,7 @@ func contains(moveable []Position, check Position) bool {
     }
     return false
 }
+
+func CreatePostion(row int, col int ) Position{
+	return Position{row: row, col: col}
+}

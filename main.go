@@ -10,16 +10,26 @@ import (
 var testingBoard pieces.Board
 
 func main() {
-	var row int
-	var col int 
+	var pos1R int
+	var pos1C  int 
+	var pos2R int
+	var pos2C  int 
 
 	testingBoard = pieces.NewBoard()
 	testingBoard.ShowBoard()
+	for{
 	fmt.Print("Enter row") 
-	fmt.Scan(&row)
+	fmt.Scan(&pos1R)
 	fmt.Print("Enter col") 
-	fmt.Scan(&col)
-	fmt.Print(pieces.ShowMoves(testingBoard,row, col))
+	fmt.Scan(&pos1C)
+	fmt.Print("Enter row") 
+	fmt.Scan(&pos2R)
+	fmt.Print("Enter col") 
+	fmt.Scan(&pos2C)
+	
+	pieces.ConfirmMove(&testingBoard,pieces.CreatePostion(pos1R,pos1C),pieces.CreatePostion(pos2R,pos2C))
+	testingBoard.ShowBoard()
+	}
 //website interface
 	// testingBoard = pieces.NewBoard()
 	// testingBoard.ShowBoard()

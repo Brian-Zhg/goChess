@@ -11,6 +11,7 @@ func NewChessPiece() chessPiece {
 	return chessPiece{
 		pieceName: "empty",
 		color:     "empty",
+		firstMove: false,
 	}
 }
 
