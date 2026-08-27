@@ -25,3 +25,11 @@
     background-color: #b58863;
 }
 
+.pressed {
+    background-color: #dbd359;
+}
+
+.unpressed {
+    background-color: #dbd25900;
+}
+

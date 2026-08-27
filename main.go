@@ -62,7 +62,7 @@ func legalMovesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	testingBoard.PieceLocation(row, col)
-    //fmt.Fprint(w, pieces.ShowMoves(&testingBoard, row, col))
+    fmt.Fprint(w, pieces.ShowMoves(&testingBoard, row, col))
 	moves := pieces.ShowMoves(&testingBoard, row, col)
 
 	jsonData, err := json.Marshal(moves)

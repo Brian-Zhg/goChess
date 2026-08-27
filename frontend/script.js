@@ -1,4 +1,5 @@
 const board = document.getElementById("board");
+var prevPiece;
 
 const boardState = [
     ["black-rook", "black-knight", "black-bishop", "black-queen",
@@ -39,7 +40,7 @@ for (let row = 0; row < 8; row++) {
 
         const square = document.createElement("div");
         square.classList.add("square");
-
+        square.classList.add("light");
         if ((row + col) % 2 === 0) {
             square.classList.add("light");
             square.dataset.row = row;
@@ -53,8 +54,8 @@ for (let row = 0; row < 8; row++) {
         const pieceName = boardState[row][col];
 
         if (pieceName !== null) {
+            
             const piece = document.createElement("div");
-
             piece.classList.add("piece");
             piece.classList.add(pieceName);
             piece.dataset.row = row;
@@ -62,9 +63,13 @@ for (let row = 0; row < 8; row++) {
             // Put the actual chess symbol inside the element
             piece.textContent = pieces[pieceName];
             piece.addEventListener("click", async function () {
+                if(prevPiece != null) prevPiece.classList.remove("pressed");
+                prevPiece = square
                 const row = piece.dataset.row;
                 const col = piece.dataset.col;
-
+                square.classList.add("pressed");
+                console.log(boardState[row][col]);
+                
                 const response = await fetch(
                     `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
                 );
@@ -81,4 +86,5 @@ for (let row = 0; row < 8; row++) {
         board.appendChild(square);
     }
 }
+
 
