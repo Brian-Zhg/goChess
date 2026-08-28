@@ -53,8 +53,8 @@ func NewBoard() Board {
 }
 
 type Position struct {
-	row int
-	col int
+	Row int
+	Col int
 }
 
 func (b Board) ShowBoard() {
@@ -87,33 +87,33 @@ func ShowMoves(b *Board, row int, col int) []Position {
 	switch piece {
 	case "pawn":
 		p := pawn{chessPiece: b.ReturnPiece(row, col)}
-		moves = p.LegalMoves(b, Position{row: row, col: col})
+		moves = p.LegalMoves(b, Position{Row: row, Col: col})
 	case "queen":
 		q := queen{chessPiece: b.ReturnPiece(row, col)}
-		moves = q.LegalMoves(b, Position{row: row, col: col})
+		moves = q.LegalMoves(b, Position{Row: row, Col: col})
 	case "king":
 		k := king{chessPiece: b.ReturnPiece(row, col)}
-		moves = k.LegalMoves(b, Position{row: row, col: col})
+		moves = k.LegalMoves(b, Position{Row: row, Col: col})
 	case "bishop":
 		bs := bishop{chessPiece: b.ReturnPiece(row, col)}
-		moves = bs.LegalMoves(b, Position{row: row, col: col})
+		moves = bs.LegalMoves(b, Position{Row: row, Col: col})
 	case "rook":
 		r := rook{chessPiece: b.ReturnPiece(row, col)}
-		moves = r.LegalMoves(b, Position{row: row, col: col})
+		moves = r.LegalMoves(b, Position{Row: row, Col: col})
 	case "knight":
 		n := knight{chessPiece: b.ReturnPiece(row, col)}
-		moves = n.LegalMoves(b, Position{row: row, col: col})
+		moves = n.LegalMoves(b, Position{Row: row, Col: col})
 	}
 	return moves
 }
 
 func Move(b *Board, piece1 Position, piece2 Position){
-	b.boardArray[piece2.row][piece2.col]= b.boardArray[piece1.row][piece1.col]
-	b.boardArray[piece1.row][piece1.col]=NewChessPiece()
+	b.boardArray[piece2.Row][piece2.Col]= b.boardArray[piece1.Row][piece1.Col]
+	b.boardArray[piece1.Row][piece1.Col]=NewChessPiece()
 }
 
 func ConfirmMove(b *Board, piece1 Position, piece2 Position){
-	if(contains(ShowMoves(b,piece1.row,piece1.col),piece2)){
+	if(contains(ShowMoves(b,piece1.Row,piece1.Col),piece2)){
 		Move(b, piece1, piece2)
 	}
 }
@@ -129,5 +129,5 @@ func contains(moveable []Position, check Position) bool {
 }
 
 func CreatePostion(row int, col int ) Position{
-	return Position{row: row, col: col}
+	return Position{Row: row, Col: col}
 }

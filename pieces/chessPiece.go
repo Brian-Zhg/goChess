@@ -16,7 +16,7 @@ func NewChessPiece() chessPiece {
 }
 
 func outBoard(currPos Position, row int, col int) bool {
-	if currPos.row+row > 7 || currPos.row+row < 0 || currPos.col+col > 7 || currPos.col+col < 0 {
+	if currPos.Row+row > 7 || currPos.Row+row < 0 || currPos.Col+col > 7 || currPos.Col+col < 0 {
 		return false
 	}
 	return true

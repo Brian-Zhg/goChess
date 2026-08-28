@@ -20,14 +20,14 @@ func (k *king) LegalMoves(board *Board, pos Position) []Position {
 		for c := 0; c < len(distance); c++ {
 			if distance[r] != 0 && distance[c] != 0 {
 				//not out of bounds
-				if !(pos.row+distance[r] < 0) && !(pos.row+distance[r] > 7) && !(pos.col+distance[c] > 7) && !(pos.col+distance[c] < 0) {
+				if !(pos.Row+distance[r] < 0) && !(pos.Row+distance[r] > 7) && !(pos.Col+distance[c] > 7) && !(pos.Col+distance[c] < 0) {
 					//empty square
-					if board.boardArray[pos.row+distance[r]][pos.col+distance[c]].pieceName == "empty" {
-						moves = append(moves, Position{row: pos.row + distance[r], col: pos.col + distance[c]})
+					if board.boardArray[pos.Row+distance[r]][pos.Col+distance[c]].pieceName == "empty" {
+						moves = append(moves, Position{Row: pos.Row + distance[r], Col: pos.Col + distance[c]})
 					}
 					//enemy
-					if board.boardArray[pos.row+distance[r]][pos.col+distance[c]].color != board.boardArray[pos.row][pos.col].color {
-						moves = append(moves, Position{row: pos.row + distance[r], col: pos.col + distance[c]})
+					if board.boardArray[pos.Row+distance[r]][pos.Col+distance[c]].color != board.boardArray[pos.Row][pos.Col].color {
+						moves = append(moves, Position{Row: pos.Row + distance[r], Col: pos.Col + distance[c]})
 					}
 				}
 			}

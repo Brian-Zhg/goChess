@@ -19,19 +19,19 @@ func (q *queen) LegalMoves(board *Board, pos Position) []Position {
 	for !(finished[0] && finished[1] && finished[2] && finished[3]) {
 		for i := 0; i < len(moveable); i++ {
 			if !finished[i] {
-				row := pos.row + moveable[i][0]*far
-				col := pos.col + moveable[i][1]*far
+				row := pos.Row + moveable[i][0]*far
+				col := pos.Col + moveable[i][1]*far
 
 				if outBoard(pos, moveable[i][0]*far, moveable[i][1]*far) {
 					if board.boardArray[row][col].pieceName == "empty" {
 						moves = append(moves, Position{
-							row: row,
-							col: col,
+							Row: row,
+							Col: col,
 						})
 					} else if board.boardArray[row][col].color != q.color {
 						moves = append(moves, Position{
-							row: row,
-							col: col,
+							Row: row,
+							Col: col,
 						})
 						finished[i] = true
 					} else {
