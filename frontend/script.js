@@ -74,10 +74,10 @@ for (let row = 0; row < 8; row++) {
                     `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
                 );
 
-                const data = await response.text();
-
+                const data = await response.json();
+                console.log(typeof data);
                 console.log(data);
-                console.log(data[0].row);
+
                 // Eventually you'll receive the legal moves here
             });
 
