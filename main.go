@@ -62,12 +62,9 @@ func legalMovesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	testingBoard.PieceLocation(row, col)
-    fmt.Fprint(w, pieces.ShowMoves(&testingBoard, row, col))
 	moves := pieces.ShowMoves(&testingBoard, row, col)
 
 	jsonData, err := json.Marshal(moves)
-
-	fmt.Fprint(w, jsonData)
-	// For now, just verify that Go received them
-	fmt.Fprintf(w, "Row: %d, Column: %d", row, col)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
 }
