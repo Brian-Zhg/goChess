@@ -22,10 +22,10 @@ func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
             moves = append(moves, Position{Row: pos.Row-1, Col: pos.Col})
         }
         //checks to see if there is an enemy piece 1 square diagonal to the current pawn
-        if(board.boardArray[pos.Row-1][pos.Col+1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
+        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, -1, 1) && board.boardArray[pos.Row-1][pos.Col+1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
             moves = append(moves, Position{Row: pos.Row-1, Col: pos.Col+1})
         }
-        if(board.boardArray[pos.Row-1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
+        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, -1, -1) && board.boardArray[pos.Row-1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
             moves = append(moves, Position{Row: pos.Row-1, Col: pos.Col-1})
         }
     }
@@ -38,10 +38,10 @@ func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
             moves = append(moves, Position{Row: pos.Row+1, Col: pos.Col})
         }
         //checks to see if there is an enemy piece 1 square diagonal to the current pawn
-        if(board.boardArray[pos.Row+1][pos.Col+1].pieceName != "empty" && board.boardArray[pos.Row+1][pos.Col+1].color != p.color){
+        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, 1, 1) &&board.boardArray[pos.Row+1][pos.Col+1].pieceName != "empty" && board.boardArray[pos.Row+1][pos.Col+1].color != p.color){
             moves = append(moves, Position{Row: pos.Row+1, Col: pos.Col+1})
         }
-        if(board.boardArray[pos.Row+1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row+1][pos.Col-1].color != p.color){
+        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, 1, -1) &&board.boardArray[pos.Row+1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row+1][pos.Col-1].color != p.color){
             moves = append(moves, Position{Row: pos.Row+1, Col: pos.Col-1})
         }
     }

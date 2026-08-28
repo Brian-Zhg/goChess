@@ -77,7 +77,7 @@ for (let row = 0; row < 8; row++) {
                 const data = await response.text();
 
                 console.log(data);
-                //console.log(data.row);
+                console.log(data[0].row);
                 // Eventually you'll receive the legal moves here
             });
 
