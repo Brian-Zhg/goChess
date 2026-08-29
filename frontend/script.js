@@ -41,73 +41,84 @@ const squares = Array.from({ length: 8 }, () => Array(8));
 
 for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
-
         const square = document.createElement("div");
-        square.classList.add("square");
-        square.classList.add("light");
 
-        if ((row + col) % 2 === 0) {
-            square.classList.add("light");
-            square.dataset.row = row;
-            square.dataset.col = col;
-        } else {
-            square.classList.add("dark");
-            square.dataset.row = row;
-            square.dataset.col = col;
-        }
-        squares[row][col] = square;
-        const pieceName = boardState[row][col];
+        createSquare(square, row, col);
+        createPiece(square, row, col);
 
-        if (pieceName != null) {
-            
-        if (prevMoves == null) {
-            console.log("HEHEHE")
-        }
-        const piece = document.createElement("div");
-        piece.classList.add("piece");
-        piece.classList.add(pieceName);
-        piece.dataset.row = row;
-        piece.dataset.col = col;
-        // Put the actual chess symbol inside the element
-        piece.textContent = pieces[pieceName];
-        piece.addEventListener("click", async function () {
-            if (prevPiece != null) prevPiece.classList.remove("pressed");
-            if (prevMoves != null) {
-                console.log("hit here")
-                console.log(prevMoves);
-                prevMoves.forEach(move => {
-                    squares[move.Row][move.Col].classList.remove("pressed");
-                });
-            }
-            prevPiece = square
-            const row = piece.dataset.row;
-            const col = piece.dataset.col;
-            square.classList.add("pressed");
-            console.log(boardState[row][col]);
-
-            const response = await fetch(
-                `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
-            );
-
-            const data = await response.json();
-            // console.log(data);
-            prevMoves = data;
-
-            data.forEach(move => {
-                squares[move.Row][move.Col].classList.add("pressed");
-                // squares[move.Row][move.Col].classList.addEventListener("click", async function () {
-
-                // }
-            });
-
-            // Eventually you'll receive the legal moves here
-        });
-
-        square.appendChild(piece);
+        board.appendChild(square);
     }
-
-    board.appendChild(square);
-}
 }
 
+//creates individual pieces
+function createSquare(square, row, col) {
+    square.classList.add("square");
+    if ((row + col) % 2 === 0) {
+        square.classList.add("light");
+        square.dataset.row = row;
+        square.dataset.col = col;
+    } else {
+        square.classList.add("dark");
+        square.dataset.row = row;
+        square.dataset.col = col;
+    }
+    squares[row][col] = square;
+}
 
+//add the actual piece
+function createPiece(square, row, col) {
+    const pieceName = boardState[row][col];
+    if (pieceName == null) {
+        return;
+    }
+    const piece = document.createElement("div");
+    piece.classList.add("piece");
+    piece.classList.add(pieceName);
+    piece.dataset.row = row;
+    piece.dataset.col = col;
+    piece.textContent = pieces[pieceName];
+    piece.addEventListener("click", () => {
+        handlePieceClick(piece, square);
+    });
+    square.appendChild(piece);
+}
+
+//when pieces are clicked
+async function handlePieceClick(piece, square) {
+    if (prevPiece != null) prevPiece.classList.remove("pressed");
+    if (prevMoves != null) {
+        prevMoves.forEach(move => {
+            squares[move.Row][move.Col].classList.remove("pressed");
+        });
+    }
+    prevPiece = square;
+    const row = piece.dataset.row;
+    const col = piece.dataset.col;
+    square.classList.add("pressed");
+    const data = await getLegalMoves(row, col);
+    highlightMoves(data);
+    prevMoves = data;
+}
+
+//deleting previous highlighted moves
+function clearPreviousMoves() {
+    if (prevMoves != null) {
+        prevMoves.forEach(move => {
+            squares[move.Row][move.Col].classList.remove("pressed");
+        });
+    }
+}
+
+async function getLegalMoves(row, col) {
+    const response = await fetch(
+        `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
+    );
+    const data = await response.json();
+    return data;
+}
+
+function highlightMoves(data) {
+    data.forEach(move => {
+        squares[move.Row][move.Col].classList.add("pressed");
+    });
+}
