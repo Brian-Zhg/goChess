@@ -86,11 +86,7 @@ function createPiece(square, row, col) {
 //when pieces are clicked
 async function handlePieceClick(piece, square) {
     if (prevPiece != null) prevPiece.classList.remove("pressed");
-    if (prevMoves != null) {
-        prevMoves.forEach(move => {
-            squares[move.Row][move.Col].classList.remove("pressed");
-        });
-    }
+    clearPreviousMoves();
     prevPiece = square;
     const row = piece.dataset.row;
     const col = piece.dataset.col;
@@ -105,6 +101,7 @@ function clearPreviousMoves() {
     if (prevMoves != null) {
         prevMoves.forEach(move => {
             squares[move.Row][move.Col].classList.remove("pressed");
+            squares[move.Row][move.Col].removeEventListener('click',handleMoveClick);
         });
     }
 }
@@ -120,5 +117,13 @@ async function getLegalMoves(row, col) {
 function highlightMoves(data) {
     data.forEach(move => {
         squares[move.Row][move.Col].classList.add("pressed");
+        squares[move.Row][move.Col].addEventListener("click", handleMoveClick)
     });
+}
+
+function handleMoveClick(event) {
+    const square = event.currentTarget;
+    const row = square.dataset.row;
+    const col = square.dataset.col;
+    console.log("Row:" + row + " Col:" + col);
 }

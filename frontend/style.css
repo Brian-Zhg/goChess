@@ -27,6 +27,7 @@
 
 .pressed {
     background-color: #dbd359;
+    cursor: pointer;
 }
 
 .unpressed {
