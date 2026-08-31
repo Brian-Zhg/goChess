@@ -2,6 +2,7 @@ const board = document.getElementById("board");
 var prevPiece;
 var prevMoves;
 
+
 const boardState = [
     ["black-rook", "black-knight", "black-bishop", "black-queen",
         "black-king", "black-bishop", "black-knight", "black-rook"],
@@ -121,9 +122,13 @@ function highlightMoves(data) {
     });
 }
 
-function handleMoveClick(event) {
+async function handleMoveClick(event) {
     const square = event.currentTarget;
     const row = square.dataset.row;
     const col = square.dataset.col;
+    const response = await fetch(
+        `http://127.0.0.1:8080/move?row=${row}&col=${col}&moveR=${prevPiece.Row}&moveC${prevPiece.Col}`
+    );
+    
     console.log("Row:" + row + " Col:" + col);
 }
