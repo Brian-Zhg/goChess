@@ -101,9 +101,7 @@ func movePiece(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pieces.ConfirmMove(&testingBoard, pieces.Position{Row:row, Col: col}, pieces.Position{Row:mRow, Col:mCol} )
-
-	jsonData, err := json.Marshal(testingBoard)
+	jsonData, err := json.Marshal(pieces.ConfirmMove(&testingBoard, pieces.Position{Row:mRow, Col:mCol},pieces.Position{Row:row, Col: col}))
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }

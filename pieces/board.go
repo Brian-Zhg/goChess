@@ -112,10 +112,13 @@ func Move(b *Board, piece1 Position, piece2 Position){
 	b.boardArray[piece1.Row][piece1.Col]=NewChessPiece()
 }
 
-func ConfirmMove(b *Board, piece1 Position, piece2 Position){
+func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool{
 	if(contains(ShowMoves(b,piece1.Row,piece1.Col),piece2)){
 		Move(b, piece1, piece2)
+		b.ShowBoard()
+		return true 
 	}
+	return false
 }
 
 

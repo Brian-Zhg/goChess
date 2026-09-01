@@ -1,5 +1,6 @@
 const board = document.getElementById("board");
 var prevPiece;
+var prevSquare;
 var prevMoves;
 
 
@@ -86,9 +87,11 @@ function createPiece(square, row, col) {
 
 //when pieces are clicked
 async function handlePieceClick(piece, square) {
+    if (prevSquare != null) prevSquare.classList.remove("pressed");
     if (prevPiece != null) prevPiece.classList.remove("pressed");
     clearPreviousMoves();
-    prevPiece = square;
+    prevSquare = square;
+    prevPiece = piece;
     const row = piece.dataset.row;
     const col = piece.dataset.col;
     square.classList.add("pressed");
@@ -107,6 +110,7 @@ function clearPreviousMoves() {
     }
 }
 
+//returns legal moves of piece
 async function getLegalMoves(row, col) {
     const response = await fetch(
         `http://127.0.0.1:8080/legal-moves?row=${row}&col=${col}`
@@ -115,20 +119,38 @@ async function getLegalMoves(row, col) {
     return data;
 }
 
+//highlight the moves that the piece can make
 function highlightMoves(data) {
     data.forEach(move => {
         squares[move.Row][move.Col].classList.add("pressed");
-        squares[move.Row][move.Col].addEventListener("click", handleMoveClick)
+        squares[move.Row][move.Col].addEventListener("click", handleMoveClick);
     });
 }
 
+//what happens when you click the highlighted square
 async function handleMoveClick(event) {
     const square = event.currentTarget;
     const row = square.dataset.row;
     const col = square.dataset.col;
     const response = await fetch(
-        `http://127.0.0.1:8080/move?row=${row}&col=${col}&moveR=${prevPiece.Row}&moveC${prevPiece.Col}`
+        `http://127.0.0.1:8080/move?row=${row}&col=${col}&moveR=${prevPiece.dataset.row}&moveC=${prevPiece.dataset.col}`
     );
-    
-    console.log("Row:" + row + " Col:" + col);
+    const data = await response.json();
+    if(data == true){
+        movePiece(prevPiece.dataset.row,prevPiece.dataset.col, row, col);
+    }
+}
+
+function movePiece(movingR, movingC, newR, newC) {
+    const oldSquare = squares[movingR][movingC];
+    const newSquare = squares[newR][newC];
+    // Get the actual piece
+    oldSquare.classList.remove("pressed");
+    const piece = oldSquare.querySelector(".piece");
+    // Move the piece visually
+    newSquare.appendChild(piece);
+    // Update the piece's coordinates
+    piece.dataset.row = newR;
+    piece.dataset.col = newC;
+    clearPreviousMoves();
 }
