@@ -94,7 +94,8 @@ async function handlePieceClick(piece, square) {
     prevPiece = piece;
     const row = piece.dataset.row;
     const col = piece.dataset.col;
-    square.classList.add("pressed");
+    //this adds the yellow without removing it causing it to look like theyre highlighted
+    piece.parentElement.classList.add("pressed");
     const data = await getLegalMoves(row, col);
     highlightMoves(data);
     prevMoves = data;
@@ -105,7 +106,7 @@ function clearPreviousMoves() {
     if (prevMoves != null) {
         prevMoves.forEach(move => {
             squares[move.Row][move.Col].classList.remove("pressed");
-            squares[move.Row][move.Col].removeEventListener('click',handleMoveClick);
+            squares[move.Row][move.Col].removeEventListener('click', handleMoveClick);
         });
     }
 }
@@ -136,8 +137,8 @@ async function handleMoveClick(event) {
         `http://127.0.0.1:8080/move?row=${row}&col=${col}&moveR=${prevPiece.dataset.row}&moveC=${prevPiece.dataset.col}`
     );
     const data = await response.json();
-    if(data == true){
-        movePiece(prevPiece.dataset.row,prevPiece.dataset.col, row, col);
+    if (data == true) {
+        movePiece(prevPiece.dataset.row, prevPiece.dataset.col, row, col);
     }
 }
 

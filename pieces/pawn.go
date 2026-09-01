@@ -25,7 +25,7 @@ func (p *pawn) LegalMoves(board *Board, pos Position) []Position {
         if(outBoard(Position{Row:pos.Row, Col:pos.Col}, -1, 1) && board.boardArray[pos.Row-1][pos.Col+1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
             moves = append(moves, Position{Row: pos.Row-1, Col: pos.Col+1})
         }
-        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, -1, -1) && board.boardArray[pos.Row-1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col+1].color != p.color){
+        if(outBoard(Position{Row:pos.Row, Col:pos.Col}, -1, -1) && board.boardArray[pos.Row-1][pos.Col-1].pieceName != "empty" && board.boardArray[pos.Row-1][pos.Col-1].color != p.color){
             moves = append(moves, Position{Row: pos.Row-1, Col: pos.Col-1})
         }
     }
