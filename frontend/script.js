@@ -90,11 +90,11 @@ async function handlePieceClick(piece, square) {
     if (prevSquare != null) prevSquare.classList.remove("pressed");
     if (prevPiece != null) prevPiece.classList.remove("pressed");
     clearPreviousMoves();
-    prevSquare = square;
     prevPiece = piece;
     const row = piece.dataset.row;
     const col = piece.dataset.col;
     //this adds the yellow without removing it causing it to look like theyre highlighted
+    prevSquare = piece.parentElement;
     piece.parentElement.classList.add("pressed");
     const data = await getLegalMoves(row, col);
     highlightMoves(data);
