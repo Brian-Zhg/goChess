@@ -64,6 +64,8 @@ function createSquare(square, row, col) {
         square.dataset.row = row;
         square.dataset.col = col;
     }
+
+    square.addEventListener("click", handleSquareClick);
     squares[row][col] = square;
 }
 
@@ -79,9 +81,6 @@ function createPiece(square, row, col) {
     piece.dataset.row = row;
     piece.dataset.col = col;
     piece.textContent = pieces[pieceName];
-    piece.addEventListener("click", () => {
-        handlePieceClick(piece, square);
-    });
     square.appendChild(piece);
 }
 
@@ -90,14 +89,41 @@ async function handlePieceClick(piece) {
     if (prevSquare != null) prevSquare.classList.remove("pressed");
     if (prevPiece != null) prevPiece.classList.remove("pressed");
     clearPreviousMoves();
-    prevPiece = piece;
-    const row = piece.dataset.row;
-    const col = piece.dataset.col;
-    prevSquare = piece.parentElement;
-    piece.parentElement.classList.add("pressed");
-    const data = await getLegalMoves(row, col);
-    highlightMoves(data);
-    prevMoves = data;
+    const response = await fetch(
+        `http://127.0.0.1:8080/turn`
+    );
+    const turn = await response.json()
+    if (turn == true && piece.classList[1].includes("black") || turn == false && piece.classList[1].includes("white")) {
+        prevPiece = piece;
+        const row = piece.dataset.row;
+        const col = piece.dataset.col;
+        prevSquare = piece.parentElement;
+        piece.parentElement.classList.add("pressed");
+        const data = await getLegalMoves(row, col);
+        highlightMoves(data);
+        prevMoves = data;
+    }
+}
+
+async function handleSquareClick(event) {
+    const square = event.currentTarget;
+
+    // If this square is a legal move, move the piece
+    if (prevMoves?.some(
+        move =>
+            Number(move.Row) === Number(square.dataset.row) &&
+            Number(move.Col) === Number(square.dataset.col)
+    )) {
+        await handleMoveClick(event);
+        return;
+    }
+
+    // Otherwise, check if there's a piece on this square
+    const piece = square.querySelector(".piece");
+
+    if (piece) {
+        await handlePieceClick(piece);
+    }
 }
 
 //deleting previous highlighted moves

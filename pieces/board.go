@@ -142,3 +142,7 @@ func contains(moveable []Position, check Position) bool {
 func CreatePostion(row int, col int ) Position{
 	return Position{Row: row, Col: col}
 }
+
+func (b Board) ReturnTurn() bool{
+	return b.turn
+}

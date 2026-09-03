@@ -37,6 +37,7 @@ func main() {
 	testingBoard.ShowBoard()
 	http.HandleFunc("/legal-moves", legalMovesHandler)
 	http.HandleFunc("/move", movePiece)
+	http.HandleFunc("/turn", turn)
 	fmt.Println("Server running on http://localhost:8080")
 
 	http.ListenAndServe(":8080", nil)
@@ -101,7 +102,20 @@ func movePiece(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonData, err := json.Marshal(pieces.ConfirmMove(&testingBoard, pieces.Position{Row:mRow, Col:mCol},pieces.Position{Row:row, Col: col}))
+	jsonData, err := json.Marshal(pieces.ConfirmMove(&testingBoard, pieces.Position{Row: mRow, Col: mCol}, pieces.Position{Row: row, Col: col}))
 	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
+func turn(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:5500")
+	w.Header().Set("Content-Type", "application/json")
+
+	jsonData, err := json.Marshal(testingBoard.ReturnTurn())
+	if err != nil {
+		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		return
+	}
+
 	w.Write(jsonData)
 }
