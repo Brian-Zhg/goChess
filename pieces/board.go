@@ -5,6 +5,7 @@ import "fmt"
 
 type Board struct {
 	boardArray [8][8]chessPiece
+	turn bool
 }
 
 func (b Board) PieceLocation(row int, col int) string {
@@ -83,7 +84,9 @@ func (b Board) ShowBoard() {
 
 func ShowMoves(b *Board, row int, col int) []Position {
 	piece := b.boardArray[row][col].pieceName
+	color := b.boardArray[row][col].color
 	moves := []Position{}
+	if(b.turn == true && color == "white" || b.turn == false && color =="black"){
 	switch piece {
 	case "pawn":
 		p := pawn{chessPiece: b.ReturnPiece(row, col)}
@@ -104,6 +107,7 @@ func ShowMoves(b *Board, row int, col int) []Position {
 		n := knight{chessPiece: b.ReturnPiece(row, col)}
 		moves = n.LegalMoves(b, Position{Row: row, Col: col})
 	}
+}
 	return moves
 }
 
@@ -113,6 +117,7 @@ func Move(b *Board, piece1 Position, piece2 Position){
 	}
 	b.boardArray[piece2.Row][piece2.Col]= b.boardArray[piece1.Row][piece1.Col]
 	b.boardArray[piece1.Row][piece1.Col]=NewChessPiece()
+	b.turn = !b.turn
 }
 
 func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool{

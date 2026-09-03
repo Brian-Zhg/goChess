@@ -86,14 +86,13 @@ function createPiece(square, row, col) {
 }
 
 //when pieces are clicked
-async function handlePieceClick(piece, square) {
+async function handlePieceClick(piece) {
     if (prevSquare != null) prevSquare.classList.remove("pressed");
     if (prevPiece != null) prevPiece.classList.remove("pressed");
     clearPreviousMoves();
     prevPiece = piece;
     const row = piece.dataset.row;
     const col = piece.dataset.col;
-    //this adds the yellow without removing it causing it to look like theyre highlighted
     prevSquare = piece.parentElement;
     piece.parentElement.classList.add("pressed");
     const data = await getLegalMoves(row, col);
@@ -148,6 +147,10 @@ function movePiece(movingR, movingC, newR, newC) {
     // Get the actual piece
     oldSquare.classList.remove("pressed");
     const piece = oldSquare.querySelector(".piece");
+    const existingPiece = newSquare.querySelector(".piece");
+    if (existingPiece) {
+        existingPiece.remove();
+    }
     // Move the piece visually
     newSquare.appendChild(piece);
     // Update the piece's coordinates
