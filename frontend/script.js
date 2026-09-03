@@ -86,8 +86,14 @@ function createPiece(square, row, col) {
 
 //when pieces are clicked
 async function handlePieceClick(piece) {
-    if (prevSquare != null) prevSquare.classList.remove("pressed");
-    if (prevPiece != null) prevPiece.classList.remove("pressed");
+    if (prevSquare != null) {
+        prevSquare.classList.remove("pressed");
+        prevSquare.classList.remove("take");
+    }
+    if (prevPiece != null) {
+        prevPiece.classList.remove("pressed");
+        prevPiece.classList.remove("take");
+    }
     clearPreviousMoves();
     const response = await fetch(
         `http://127.0.0.1:8080/turn`
@@ -131,6 +137,7 @@ function clearPreviousMoves() {
     if (prevMoves != null) {
         prevMoves.forEach(move => {
             squares[move.Row][move.Col].classList.remove("pressed");
+            squares[move.Row][move.Col].classList.remove("take");
             squares[move.Row][move.Col].removeEventListener('click', handleMoveClick);
         });
     }
@@ -148,7 +155,10 @@ async function getLegalMoves(row, col) {
 //highlight the moves that the piece can make
 function highlightMoves(data) {
     data.forEach(move => {
-        squares[move.Row][move.Col].classList.add("pressed");
+        if (squares[move.Row][move.Col].querySelector(".piece")) {
+            squares[move.Row][move.Col].classList.add("take");
+        }
+        else squares[move.Row][move.Col].classList.add("pressed");
         squares[move.Row][move.Col].addEventListener("click", handleMoveClick);
     });
 }
@@ -172,6 +182,7 @@ function movePiece(movingR, movingC, newR, newC) {
     const newSquare = squares[newR][newC];
     // Get the actual piece
     oldSquare.classList.remove("pressed");
+    oldSquare.classList.remove("take");
     const piece = oldSquare.querySelector(".piece");
     const existingPiece = newSquare.querySelector(".piece");
     if (existingPiece) {
