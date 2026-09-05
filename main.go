@@ -3,7 +3,6 @@ package main
 import (
 	"chess/pieces"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -38,7 +37,6 @@ func main() {
 	http.HandleFunc("/legal-moves", legalMovesHandler)
 	http.HandleFunc("/move", movePiece)
 	http.HandleFunc("/turn", turn)
-	fmt.Println("Server running on http://localhost:8080")
 
 	http.ListenAndServe(":8080", nil)
 }

@@ -121,7 +121,6 @@ func Move(b *Board, piece1 Position, piece2 Position){
 }
 
 func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool{
-	fmt.Print(b.boardArray[piece1.Row][piece1.Col].firstMove)
 	if(contains(ShowMoves(b,piece1.Row,piece1.Col),piece2)){
 		Move(b, piece1, piece2)
 		b.ShowBoard()
@@ -145,4 +144,18 @@ func CreatePostion(row int, col int ) Position{
 
 func (b Board) ReturnTurn() bool{
 	return b.turn
+}
+
+func inCheck(board *Board, pos Position, color string) bool {
+	for i := 0; i < len(board.boardArray); i++ {
+		for r := 0; r < len(board.boardArray); r++ {
+			if board.boardArray[i][r].color != color {
+				if contains(ShowMoves(board, i, r), pos) {
+					fmt.Print("hehe it works")
+				}
+			}
+		}
+	}
+	fmt.Print("hehe it doesnt work")
+	return false
 }
