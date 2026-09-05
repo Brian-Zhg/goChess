@@ -6,6 +6,10 @@ import "fmt"
 type Board struct {
 	boardArray [8][8]chessPiece
 	turn bool
+	blackPieces []*chessPiece
+	whitePieces []*chessPiece
+	bKing *chessPiece
+	wKing *chessPiece
 }
 
 func (b Board) PieceLocation(row int, col int) string {
@@ -49,7 +53,22 @@ func NewBoard() Board {
 	newBoard.boardArray[0][6] = NewKnight("white")
 	newBoard.boardArray[7][1] = NewKnight("black")
 	newBoard.boardArray[7][6] = NewKnight("black")
-
+	
+	for i:=0; i < 8; i++{
+		if(i == 0 || i ==1 || i == 7 ||i ==8){
+			for r:=0; r<8; r++{
+				if(i == 0 || i == 1){
+					newBoard.blackPieces = append(newBoard.blackPieces, &newBoard.boardArray[i][r])
+					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.bKing = &newBoard.boardArray[i][r]}
+				}
+				if(i == 7 || i == 8){
+					newBoard.whitePieces = append(newBoard.whitePieces, &newBoard.boardArray[i][r])
+					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.wKing = &newBoard.boardArray[i][r]}
+				}
+		}
+		}
+		
+	}
 	return newBoard
 }
 
@@ -146,16 +165,18 @@ func (b Board) ReturnTurn() bool{
 	return b.turn
 }
 
-func inCheck(board *Board, pos Position, color string) bool {
-	for i := 0; i < len(board.boardArray); i++ {
-		for r := 0; r < len(board.boardArray); r++ {
-			if board.boardArray[i][r].color != color {
-				if contains(ShowMoves(board, i, r), pos) {
-					fmt.Print("hehe it works")
-				}
-			}
+func inCheck(board *Board, k king) bool {
+	fmt.Print(k.color)
+	if k.color == "black" {
+		for i := 0; i < len(board.whitePieces); i++{
+			if(contains(ShowMoves(board,board.whitePieces[i].pos.Row,board.whitePieces[i].pos.Col),Position{Row:k.pos.Row, Col:k.pos.Col})) {return true}
+		}
+	}else{
+		for i := 0; i < len(board.blackPieces); i++{
+			if(contains(ShowMoves(board,board.blackPieces[i].pos.Row,board.blackPieces[i].pos.Col),Position{Row:k.pos.Row, Col:k.pos.Col})) {return true}
 		}
 	}
-	fmt.Print("hehe it doesnt work")
-	return false
+	
+	return false;
 }
+
