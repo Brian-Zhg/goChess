@@ -55,13 +55,13 @@ func NewBoard() Board {
 	newBoard.boardArray[7][6] = NewKnight("black")
 	
 	for i:=0; i < 8; i++{
-		if(i == 0 || i ==1 || i == 7 ||i ==8){
+		if(i == 0 || i ==1 || i == 7 ||i ==6){
 			for r:=0; r<8; r++{
 				if(i == 0 || i == 1){
 					newBoard.blackPieces = append(newBoard.blackPieces, &newBoard.boardArray[i][r])
 					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.bKing = &newBoard.boardArray[i][r]}
 				}
-				if(i == 7 || i == 8){
+				if(i == 6 || i == 7){
 					newBoard.whitePieces = append(newBoard.whitePieces, &newBoard.boardArray[i][r])
 					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.wKing = &newBoard.boardArray[i][r]}
 				}
@@ -143,6 +143,7 @@ func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool{
 	if(contains(ShowMoves(b,piece1.Row,piece1.Col),piece2)){
 		Move(b, piece1, piece2)
 		b.ShowBoard()
+		fmt.Print(inCheck(b, b.turn))
 		return true 
 	}
 	return false
@@ -165,15 +166,16 @@ func (b Board) ReturnTurn() bool{
 	return b.turn
 }
 
-func inCheck(board *Board, k king) bool {
-	fmt.Print(k.color)
-	if k.color == "black" {
+func inCheck(board *Board, turn bool) bool {
+	if turn == true {
 		for i := 0; i < len(board.whitePieces); i++{
-			if(contains(ShowMoves(board,board.whitePieces[i].pos.Row,board.whitePieces[i].pos.Col),Position{Row:k.pos.Row, Col:k.pos.Col})) {return true}
+			fmt.Print(board.whitePieces[i].pieceName +board.whitePieces[i].color +  "\n")
+			if(contains(ShowMoves(board,board.whitePieces[i].pos.Row,board.whitePieces[i].pos.Col),Position{Row:board.bKing.pos.Row, Col:board.bKing.pos.Col})) {return true}
 		}
 	}else{
 		for i := 0; i < len(board.blackPieces); i++{
-			if(contains(ShowMoves(board,board.blackPieces[i].pos.Row,board.blackPieces[i].pos.Col),Position{Row:k.pos.Row, Col:k.pos.Col})) {return true}
+			fmt.Print(board.blackPieces[i].pieceName + board.blackPieces[i].color + "\n")
+			if(contains(ShowMoves(board,board.blackPieces[i].pos.Row,board.blackPieces[i].pos.Col),Position{Row:board.wKing.pos.Row, Col:board.wKing.pos.Col})) {return true}
 		}
 	}
 	
