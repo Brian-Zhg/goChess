@@ -2,14 +2,11 @@ package pieces
 
 import "fmt"
 
-
 type Board struct {
 	boardArray [8][8]chessPiece
-	turn bool
-	blackPieces []*chessPiece
-	whitePieces []*chessPiece
-	bKing *chessPiece
-	wKing *chessPiece
+	turn       bool //white == true
+	bKing      *chessPiece
+	wKing      *chessPiece
 }
 
 func (b Board) PieceLocation(row int, col int) string {
@@ -53,22 +50,14 @@ func NewBoard() Board {
 	newBoard.boardArray[0][6] = NewKnight("white")
 	newBoard.boardArray[7][1] = NewKnight("black")
 	newBoard.boardArray[7][6] = NewKnight("black")
-	
-	for i:=0; i < 8; i++{
-		if(i == 0 || i ==1 || i == 7 ||i ==6){
-			for r:=0; r<8; r++{
-				if(i == 0 || i == 1){
-					newBoard.blackPieces = append(newBoard.blackPieces, &newBoard.boardArray[i][r])
-					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.bKing = &newBoard.boardArray[i][r]}
-				}
-				if(i == 6 || i == 7){
-					newBoard.whitePieces = append(newBoard.whitePieces, &newBoard.boardArray[i][r])
-					if(newBoard.boardArray[i][r].pieceName == "king") {newBoard.wKing = &newBoard.boardArray[i][r]}
-				}
-		}
-		}
-		
-	}
+
+	newBoard.wKing = &newBoard.boardArray[0][4]
+	newBoard.wKing.pos.Row =0;
+	newBoard.wKing.pos.Col =4;
+	newBoard.bKing = &newBoard.boardArray[7][4]
+	newBoard.bKing.pos.Row =7;
+	newBoard.bKing.pos.Col =4;
+
 	return newBoard
 }
 
@@ -102,10 +91,17 @@ func (b Board) ShowBoard() {
 }
 
 func ShowMoves(b *Board, row int, col int) []Position {
-	piece := b.boardArray[row][col].pieceName
 	color := b.boardArray[row][col].color
 	moves := []Position{}
-	if(b.turn == true && color == "white" || b.turn == false && color =="black"){
+	if b.turn == true && color == "white" || b.turn == false && color == "black" {
+		moves = getMoves(b, row, col)
+	}
+	return moves
+}
+
+func getMoves(b *Board, row int, col int) []Position {
+	piece := b.boardArray[row][col].pieceName
+	moves := []Position{}
 	switch piece {
 	case "pawn":
 		p := pawn{chessPiece: b.ReturnPiece(row, col)}
@@ -126,59 +122,88 @@ func ShowMoves(b *Board, row int, col int) []Position {
 		n := knight{chessPiece: b.ReturnPiece(row, col)}
 		moves = n.LegalMoves(b, Position{Row: row, Col: col})
 	}
-}
 	return moves
 }
 
-func Move(b *Board, piece1 Position, piece2 Position){
-	if(b.boardArray[piece1.Row][piece1.Col].firstMove== false){
-		b.boardArray[piece1.Row][piece1.Col].firstMove= true
+func Move(b *Board, piece1 Position, piece2 Position) {
+	if b.boardArray[piece1.Row][piece1.Col].firstMove == false {
+		b.boardArray[piece1.Row][piece1.Col].firstMove = true
 	}
-	b.boardArray[piece2.Row][piece2.Col]= b.boardArray[piece1.Row][piece1.Col]
-	b.boardArray[piece1.Row][piece1.Col]=NewChessPiece()
+
+	b.boardArray[piece2.Row][piece2.Col] =
+		b.boardArray[piece1.Row][piece1.Col]
+
+	// Update its position AFTER copying
+	b.boardArray[piece2.Row][piece2.Col].pos = Position{
+		Row: piece2.Row,
+		Col: piece2.Col,
+	}
+	if b.boardArray[piece2.Row][piece2.Col].pieceName == "king" {
+		if b.boardArray[piece2.Row][piece2.Col].color == "white" {
+			b.wKing = &b.boardArray[piece2.Row][piece2.Col]
+		} else {
+			b.bKing = &b.boardArray[piece2.Row][piece2.Col]
+		}
+	}
+
+	// Empty the old square
+	b.boardArray[piece1.Row][piece1.Col] = NewChessPiece()
+
 	b.turn = !b.turn
 }
 
-func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool{
-	if(contains(ShowMoves(b,piece1.Row,piece1.Col),piece2)){
+func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
+	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
 		Move(b, piece1, piece2)
 		b.ShowBoard()
 		fmt.Print(inCheck(b, b.turn))
-		return true 
+		return true
 	}
 	return false
 }
 
 func contains(moveable []Position, check Position) bool {
-    for i := 0;i < len(moveable); i++ {
-        if moveable[i] == check {
-            return true
-        }
-    }
-    return false
+	for i := 0; i < len(moveable); i++ {
+		if moveable[i] == check {
+			return true
+		}
+	}
+	return false
 }
 
-func CreatePostion(row int, col int ) Position{
+func CreatePostion(row int, col int) Position {
 	return Position{Row: row, Col: col}
 }
 
-func (b Board) ReturnTurn() bool{
+func (b Board) ReturnTurn() bool {
 	return b.turn
 }
 
 func inCheck(board *Board, turn bool) bool {
-	if turn == true {
-		for i := 0; i < len(board.whitePieces); i++{
-			fmt.Print(board.whitePieces[i].pieceName +board.whitePieces[i].color +  "\n")
-			if(contains(ShowMoves(board,board.whitePieces[i].pos.Row,board.whitePieces[i].pos.Col),Position{Row:board.bKing.pos.Row, Col:board.bKing.pos.Col})) {return true}
+	if turn == false {
+		fmt.Print(board.bKing.pos.Row)
+		fmt.Print(board.bKing.pos.Col)
+		for row := 0; row < 8; row++ {
+			for col := 0; col < 8; col++ {
+				if board.boardArray[row][col].color == "white" {
+					if contains(getMoves(board, row, col), board.bKing.pos) {
+						return true
+					}
+				}
+			}
 		}
-	}else{
-		for i := 0; i < len(board.blackPieces); i++{
-			fmt.Print(board.blackPieces[i].pieceName + board.blackPieces[i].color + "\n")
-			if(contains(ShowMoves(board,board.blackPieces[i].pos.Row,board.blackPieces[i].pos.Col),Position{Row:board.wKing.pos.Row, Col:board.wKing.pos.Col})) {return true}
+	} else {
+		fmt.Print(board.wKing.pos.Row)
+		fmt.Print(board.wKing.pos.Col)
+		for row := 0; row < 8; row++ {
+			for col := 0; col < 8; col++ {
+				if board.boardArray[row][col].color == "black" {
+					if contains(getMoves(board, row, col), board.wKing.pos) {
+						return true
+					}
+				}
+			}
 		}
 	}
-	
-	return false;
+	return false
 }
-
