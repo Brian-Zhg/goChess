@@ -128,6 +128,7 @@ func getMoves(b *Board, row int, col int) []Position {
 	return moves
 }
 
+//actually moves the piece
 func Move(b *Board, piece1 Position, piece2 Position) {
 	if b.boardArray[piece1.Row][piece1.Col].firstMove == false {
 		b.boardArray[piece1.Row][piece1.Col].firstMove = true
@@ -161,9 +162,12 @@ func Move(b *Board, piece1 Position, piece2 Position) {
 	b.turn = !b.turn
 }
 
+//checks to see if the move causes the king to be in check (illegal move)
 func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
 	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
-		Move(b, piece1, piece2)
+		temp:= *b
+		Move(&temp, piece1, piece2)
+		if(!inCheck(&temp, !temp.turn)){Move(b, piece1, piece2)}
 		b.ShowBoard()
 		fmt.Print(inCheck(b, b.turn))
 		return true
@@ -216,3 +220,4 @@ func inCheck(board *Board, turn bool) bool {
 	}
 	return false
 }
+
