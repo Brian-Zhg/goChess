@@ -5,8 +5,8 @@ import "fmt"
 type Board struct {
 	boardArray [8][8]chessPiece
 	turn       bool //white == true
-	bKing      *chessPiece
-	wKing      *chessPiece
+	bKing      Position
+	wKing      Position
 }
 
 func (b Board) PieceLocation(row int, col int) string {
@@ -51,12 +51,15 @@ func NewBoard() Board {
 	newBoard.boardArray[7][1] = NewKnight("black")
 	newBoard.boardArray[7][6] = NewKnight("black")
 
-	newBoard.wKing = &newBoard.boardArray[0][4]
-	newBoard.wKing.pos.Row =0;
-	newBoard.wKing.pos.Col =4;
-	newBoard.bKing = &newBoard.boardArray[7][4]
-	newBoard.bKing.pos.Row =7;
-	newBoard.bKing.pos.Col =4;
+	newBoard.wKing = Position{
+		Row: 0,
+		Col: 4,
+	}
+
+	newBoard.bKing = Position{
+		Row: 7,
+		Col: 4,
+	}
 
 	return newBoard
 }
@@ -140,9 +143,15 @@ func Move(b *Board, piece1 Position, piece2 Position) {
 	}
 	if b.boardArray[piece2.Row][piece2.Col].pieceName == "king" {
 		if b.boardArray[piece2.Row][piece2.Col].color == "white" {
-			b.wKing = &b.boardArray[piece2.Row][piece2.Col]
+			b.wKing = Position{
+				Row:piece2.Row,
+				Col:piece2.Col,
+			}
 		} else {
-			b.bKing = &b.boardArray[piece2.Row][piece2.Col]
+			b.bKing = Position{
+				Row:piece2.Row,
+				Col:piece2.Col,
+			}
 		}
 	}
 
@@ -181,24 +190,24 @@ func (b Board) ReturnTurn() bool {
 
 func inCheck(board *Board, turn bool) bool {
 	if turn == false {
-		fmt.Print(board.bKing.pos.Row)
-		fmt.Print(board.bKing.pos.Col)
+		fmt.Print(board.bKing.Row)
+		fmt.Print(board.bKing.Col)
 		for row := 0; row < 8; row++ {
 			for col := 0; col < 8; col++ {
 				if board.boardArray[row][col].color == "white" {
-					if contains(getMoves(board, row, col), board.bKing.pos) {
+					if contains(getMoves(board, row, col), board.bKing) {
 						return true
 					}
 				}
 			}
 		}
 	} else {
-		fmt.Print(board.wKing.pos.Row)
-		fmt.Print(board.wKing.pos.Col)
+		fmt.Print(board.wKing.Row)
+		fmt.Print(board.wKing.Col)
 		for row := 0; row < 8; row++ {
 			for col := 0; col < 8; col++ {
 				if board.boardArray[row][col].color == "black" {
-					if contains(getMoves(board, row, col), board.wKing.pos) {
+					if contains(getMoves(board, row, col), board.wKing) {
 						return true
 					}
 				}
