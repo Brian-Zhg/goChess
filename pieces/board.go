@@ -96,10 +96,18 @@ func (b Board) ShowBoard() {
 func ShowMoves(b *Board, row int, col int) []Position {
 	color := b.boardArray[row][col].color
 	moves := []Position{}
+	finalMoves := []Position{}
 	if b.turn == true && color == "white" || b.turn == false && color == "black" {
 		moves = getMoves(b, row, col)
 	}
-	return moves
+	for i := 0; i < len(moves); i++ {
+		temp := *b
+		Move(&temp, Position{row, col}, moves[i])
+		if !inCheck(&temp, !temp.turn) {
+			finalMoves = append(finalMoves, moves[i])
+		}
+	}
+	return finalMoves
 }
 
 func getMoves(b *Board, row int, col int) []Position {
@@ -145,13 +153,13 @@ func Move(b *Board, piece1 Position, piece2 Position) {
 	if b.boardArray[piece2.Row][piece2.Col].pieceName == "king" {
 		if b.boardArray[piece2.Row][piece2.Col].color == "white" {
 			b.wKing = Position{
-				Row:piece2.Row,
-				Col:piece2.Col,
+				Row: piece2.Row,
+				Col: piece2.Col,
 			}
 		} else {
 			b.bKing = Position{
-				Row:piece2.Row,
-				Col:piece2.Col,
+				Row: piece2.Row,
+				Col: piece2.Col,
 			}
 		}
 	}
@@ -165,14 +173,10 @@ func Move(b *Board, piece1 Position, piece2 Position) {
 //checks to see if the move causes the king to be in check (illegal move)
 func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
 	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
-		temp:= *b
-		Move(&temp, piece1, piece2)
-		if(!inCheck(&temp, !temp.turn)){
-			Move(b, piece1, piece2)
-			return true
-		}
+		Move(b, piece1, piece2)
 		b.ShowBoard()
 		fmt.Print(inCheck(b, b.turn))
+		return true
 	}
 	return false
 }
@@ -196,8 +200,6 @@ func (b Board) ReturnTurn() bool {
 
 func inCheck(board *Board, turn bool) bool {
 	if turn == false {
-		fmt.Print(board.bKing.Row)
-		fmt.Print(board.bKing.Col)
 		for row := 0; row < 8; row++ {
 			for col := 0; col < 8; col++ {
 				if board.boardArray[row][col].color == "white" {
@@ -208,8 +210,6 @@ func inCheck(board *Board, turn bool) bool {
 			}
 		}
 	} else {
-		fmt.Print(board.wKing.Row)
-		fmt.Print(board.wKing.Col)
 		for row := 0; row < 8; row++ {
 			for col := 0; col < 8; col++ {
 				if board.boardArray[row][col].color == "black" {
@@ -222,4 +222,3 @@ func inCheck(board *Board, turn bool) bool {
 	}
 	return false
 }
-
