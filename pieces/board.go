@@ -167,10 +167,12 @@ func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
 	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
 		temp:= *b
 		Move(&temp, piece1, piece2)
-		if(!inCheck(&temp, !temp.turn)){Move(b, piece1, piece2)}
+		if(!inCheck(&temp, !temp.turn)){
+			Move(b, piece1, piece2)
+			return true
+		}
 		b.ShowBoard()
 		fmt.Print(inCheck(b, b.turn))
-		return true
 	}
 	return false
 }
