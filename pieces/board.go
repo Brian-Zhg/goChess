@@ -136,7 +136,7 @@ func getMoves(b *Board, row int, col int) []Position {
 	return moves
 }
 
-//actually moves the piece
+//actually moves the piece moves to piece 2
 func Move(b *Board, piece1 Position, piece2 Position) {
 	if b.boardArray[piece1.Row][piece1.Col].firstMove == false {
 		b.boardArray[piece1.Row][piece1.Col].firstMove = true
@@ -175,6 +175,9 @@ func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
 	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
 		Move(b, piece1, piece2)
 		b.ShowBoard()
+		if b.boardArray[piece2.Row][piece2.Col].pieceName == "pawn" && (piece2.Row == 0 || piece2.Row == 7) {
+			changePiece(b, piece2.Row, piece2.Col, "queen")
+		}
 		return true
 	}
 	return false
@@ -197,7 +200,7 @@ func (b Board) ReturnTurn() bool {
 	return b.turn
 }
 
-//returns true if it is in check 
+//returns true if it is in check
 func inCheck(board *Board, turn bool) bool {
 	if turn == false {
 		for row := 0; row < 8; row++ {
@@ -223,14 +226,28 @@ func inCheck(board *Board, turn bool) bool {
 	return false
 }
 
-//checkmate is just stalemate and in check 
+//checkmate is just stalemate and in check
 func staleMate(board *Board) bool {
 	for row := 0; row < 8; row++ {
 		for col := 0; col < 8; col++ {
-			if(len(ShowMoves(board,row,col)) != 0){
+			if len(ShowMoves(board, row, col)) != 0 {
 				return false
 			}
 		}
 	}
 	return true
+}
+
+func changePiece(board *Board, row int, col int, change string) {
+	color := board.boardArray[row][col].color
+	switch change {
+	case "queen":
+		board.boardArray[row][col] = NewQueen(color)
+	case "bishop":
+		board.boardArray[row][col] = NewBishop(color)
+	case "rook":
+		board.boardArray[row][col] = NewRook(color)
+	case "knight":
+		board.boardArray[row][col] = NewKnight(color)
+	}
 }

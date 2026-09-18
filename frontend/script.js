@@ -2,7 +2,8 @@ const board = document.getElementById("board");
 var prevPiece;
 var prevSquare;
 var prevMoves;
-
+const noTake = new Audio("sound/noTake.mp3");
+const take = new Audio("sound/capture.mp3")
 
 const boardState = [
     ["black-rook", "black-knight", "black-bishop", "black-queen",
@@ -187,6 +188,10 @@ function movePiece(movingR, movingC, newR, newC) {
     const existingPiece = newSquare.querySelector(".piece");
     if (existingPiece) {
         existingPiece.remove();
+        take.play();
+    }
+    else{
+        noTake.play();
     }
     // Move the piece visually
     newSquare.appendChild(piece);
