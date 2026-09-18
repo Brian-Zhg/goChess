@@ -168,6 +168,7 @@ func Move(b *Board, piece1 Position, piece2 Position) {
 	b.boardArray[piece1.Row][piece1.Col] = NewChessPiece()
 
 	b.turn = !b.turn
+
 }
 
 //checks to see if the move causes the king to be in check (illegal move)
@@ -175,7 +176,6 @@ func ConfirmMove(b *Board, piece1 Position, piece2 Position) bool {
 	if contains(ShowMoves(b, piece1.Row, piece1.Col), piece2) {
 		Move(b, piece1, piece2)
 		b.ShowBoard()
-		fmt.Print(inCheck(b, b.turn))
 		return true
 	}
 	return false
@@ -198,6 +198,7 @@ func (b Board) ReturnTurn() bool {
 	return b.turn
 }
 
+//returns true if it is in check 
 func inCheck(board *Board, turn bool) bool {
 	if turn == false {
 		for row := 0; row < 8; row++ {
@@ -221,4 +222,15 @@ func inCheck(board *Board, turn bool) bool {
 		}
 	}
 	return false
+}
+
+func staleMate(board *Board) bool {
+	for row := 0; row < 8; row++ {
+		for col := 0; col < 8; col++ {
+			if(len(ShowMoves(board,row,col)) != 0){
+				return false
+			}
+		}
+	}
+	return true
 }

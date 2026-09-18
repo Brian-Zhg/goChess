@@ -37,7 +37,6 @@ func main() {
 	http.HandleFunc("/legal-moves", legalMovesHandler)
 	http.HandleFunc("/move", movePiece)
 	http.HandleFunc("/turn", turn)
-
 	http.ListenAndServe(":8080", nil)
 }
 
